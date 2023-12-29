@@ -41,6 +41,7 @@ const engine = {
                         this.score.lose++
                         return this.msg('lose');
                     }
+                    this.score.draw++
                     return 'Draw'
                 case "Paper":
                     if (computerSelection === "Rock"){
@@ -50,6 +51,7 @@ const engine = {
                         this.score.lose++
                         return this.msg('lose');
                     }
+                    this.score.draw++
                     return 'Draw'
                 case "Scissor":
                     if (computerSelection === "Paper"){
@@ -66,25 +68,28 @@ const engine = {
                     return this.msg('invalid')
             }
     },
-    random: function(max=1, min=0){return Math.floor(Math.random()*(max-min)+min)}
+    random: function(max=1, min=0){return Math.floor(Math.random()*(max-min)+min)},
+    chooseWinner:function(){
+        if(this.score.wins > this.score.lose){return this.msg('win')}
+        else if(this.score.wins == this.score.lose){return this.msg('draw')}
+        return this.msg('lose')
+    }
 }
 
 const testInput=['rock', 'pApier', 'Scissor', 'Rock', 'Paper', 'ROCK', 'SCIssor', 0, NaN, false, null, undefined, 35454];
 
-//game
-// const getplayerSelection = input[Math.floor(Math.random()*input.length)]
-// const getcomputerSelection = engine.getcomputerSelection();
-// const winner = engine.playRound(getcomputerSelection, getplayerSelection) 
+const playCommand = document.getElementById('play');
+const computerSlot = document.querySelector('#computer-choice > span');
+const playerSlot = document.querySelector('#player-choice > span');
+const score = document.getElementById('score');
 
-// console.log({"computer":getcomputerSelection},{"player":getplayerSelection})
-// console.log(winner)
-// console.log(engine.score)
-
-
-// 5 round game
-for (let i=0;i<=20;i++){
-    const getplayerSelection = testInput[Math.floor(Math.random()*testInput.length)]
-    const getcomputerSelection = engine.getcomputerSelection();
-    engine.playRound(getcomputerSelection, getplayerSelection) 
-}
-
+playCommand.addEventListener('click',(e)=>{
+    for (let i=0;i<=4;i++){
+        const getPlayerSelection = prompt('Make a choice ("Rock", "Paper", "Scissor") :')
+        const getcomputerSelection = engine.getcomputerSelection()
+        engine.playRound(getcomputerSelection, getPlayerSelection)
+        playerSlot.textContent += getPlayerSelection+", "
+        computerSlot.textContent += getcomputerSelection+", "
+        score.textContent = engine.chooseWinner() + JSON.stringify(engine.score)
+    }
+});
